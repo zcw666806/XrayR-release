@@ -55,10 +55,10 @@ custom_outbound.json
 
 这个版本假设你有：
 
-warp：Cloudflare WARP 出站（socks 举例）
-socks5-warp：本机 WARP Socks5 端口，用于特殊站点
-IPv4_out：某条专门的代理线路（比如机场节点 A）
-IPv6_out：自由直连走 IPv6，用于 Netflix 解锁
+warp：Cloudflare WARP 出站（socks 举例）  
+socks5-warp：本机 WARP Socks5 端口，用于特殊站点  
+IPv4_out：某条专门的代理线路（比如机场节点 A）  
+IPv6_out：自由直连走 IPv6，用于 Netflix 解锁  
 ```
 [
   {
@@ -143,11 +143,11 @@ route.json
 
 目标逻辑：
 
-内网、BT → block
-ChatGPT/OpenAI → socks5-warp（单独 WARP 出口）
-Netflix → IPv6_out
-国内域名/IP → warp（或 direct）
-其它全部 → IPv4_out
+内网、BT → block  
+ChatGPT/OpenAI → socks5-warp（单独 WARP 出口）  
+Netflix → IPv6_out  
+国内域名/IP → warp（或 direct）  
+其它全部 → IPv4_out  
 ```
 {
   "domainStrategy": "IPIfNonMatch",
