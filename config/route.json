@@ -21,15 +21,21 @@
     },
     {
       "domain": [
+        "geosite:netflix"
+      ],
+      "outboundTag": "IPv6_out"
+    },
+    {
+      "domain": [
         "geosite:cn"
       ],
-      "outboundTag": "warp"
+      "outboundTag": "direct"
     },
     {
       "ip": [
         "geoip:cn"
       ],
-      "outboundTag": "warp"
+      "outboundTag": "direct"
     },
     {
       "outboundTag": "IPv4_out",
