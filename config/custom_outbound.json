@@ -2,7 +2,9 @@
     {
         "tag": "IPv4_out",
         "protocol": "freedom",
-        "settings": {}
+        "settings": {
+          "domainStrategy": "UseIPv4v6"
+        }
     },
     {
         "tag": "IPv6_out",
@@ -22,19 +24,29 @@
         }
     },
     {
-    "tag": "direct",
-    "protocol": "freedom",
-    "settings": {
-      "domainStrategy": "UseIPv4"
-    }
+        "tag": "warp",
+        "protocol": "socks",
+        "settings": {
+            "servers": [{
+              "address": "127.0.0.1",
+              "port": 40000
+            }]
+        }
     },
     {
-    "tag": "block",
-    "protocol": "blackhole",
-    "settings": {
-      "response": {
-        "type": "http"
-      }
+        "tag": "direct",
+        "protocol": "freedom",
+        "settings": {
+          "domainStrategy": "UseIPv4"
+        }
+    },
+    {
+        "tag": "block",
+        "protocol": "blackhole",
+        "settings": {
+          "response": {
+            "type": "http"
+          }
+        }
     }
-  }
 ]
