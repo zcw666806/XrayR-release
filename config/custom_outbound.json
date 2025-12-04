@@ -22,7 +22,19 @@
         }
     },
     {
-        "protocol": "blackhole",
-        "tag": "block"
+    "tag": "direct",
+    "protocol": "freedom",
+    "settings": {
+      "domainStrategy": "UseIPv4"
     }
+    },
+    {
+    "tag": "block",
+    "protocol": "blackhole",
+    "settings": {
+      "response": {
+        "type": "http"
+      }
+    }
+  }
 ]
