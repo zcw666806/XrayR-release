@@ -1,36 +1,39 @@
 {
-    "domainStrategy": "IPOnDemand",
-    "rules": [
-        {
-            "type": "field",
-            "outboundTag": "block",
-            "ip": [
-                "geoip:private"
-            ]
-        },
-        {
-            "type": "field",
-            "outboundTag": "block",
-            "protocol": [
-                "bittorrent"
-            ]
-        },
-        {
-            "type": "field",
-            "outboundTag": "socks5-warp",
-            "domain": []
-        },
-        {
-            "type": "field",
-            "outboundTag": "IPv6_out",
-            "domain": [
-                "geosite:netflix"
-            ]
-        },
-        {
-            "type": "field",
-            "outboundTag": "IPv4_out",
-            "network": "udp,tcp"
-        }
-    ]
+  "domainStrategy": "IPIfNonMatch",
+  "rules": [
+    {
+      "outboundTag": "block",
+      "ip": [
+        "geoip:private"
+      ]
+    },
+    {
+      "outboundTag": "block",
+      "protocol": [
+        "bittorrent"
+      ]
+    },
+    {
+      "domain": [
+        "geosite:google"
+      ],
+      "outboundTag": "IPv4_out"
+    },
+    {
+      "domain": [
+        "geosite:cn"
+      ],
+      "outboundTag": "warp"
+    },
+    {
+      "ip": [
+        "geoip:cn"
+      ],
+      "outboundTag": "warp"
+    },
+    {
+      "outboundTag": "IPv4_out",
+      "network": "udp,tcp"
+    }
+  ]
 }
