@@ -23,31 +23,29 @@ docker pull ghcr.io/xrayr-project/xrayr:latest && docker run --restart=always --
 适配v2board的本地化改造
 
 ```
-config.yml
+1.config.yml
 
 正确填好 V2Board 地址、ApiKey、NodeID
-
 开启 EnableDNS: true、指定 dns/route/outbound 的路径
 
-dns.json
+2.dns.json
 
 按我给的模板：国内走 223.5.5.5，国外走 1.1.1.1 DoH，queryStrategy: UseIPv4
 
-custom_outbound.json
+3.custom_outbound.json
 
 先只放 direct + block 两个出口
-
 以后要加 WARP/备用机场再扩展
 
-route.json
+4.route.json
 
 正常情况直接用上面那套“国内直连，国外走 proxy”
 
-custom_inbound.json
+5.custom_inbound.json
 
 先留空数组 []
 
-rulelist
+6.rulelist
 
 暂时可以不用动；等你熟悉了再加审计规则。
 ```
