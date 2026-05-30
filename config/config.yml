@@ -23,8 +23,8 @@ Nodes:
   - PanelType: V2board           # 面板类型，SSpanel, V2board, NewV2board, PMpanel, Proxypanel, V2RaySocks, GoV2Panel
     ApiConfig:
       ApiHost: "https://now.just-do-it.top"  # 你的 v2board 面板地址（带 https）
-      ApiKey: "zcw0101.20250627"             # 节点通讯密钥（后台设置）
-      NodeID: 20                              # 节点 ID（后台创建节点后可见）
+      ApiKey: "zc0101my_v2_board"            # 节点通讯密钥（后台设置）
+      NodeID: 7                              # 节点 ID（后台创建节点后可见）
       NodeType: V2ray                        # 节点类型，可选 V2ray, Vmess, Vless, Shadowsocks, Trojan, Shadowsocks-Plugin
       Timeout: 30                            # 请求超时（秒）
       EnableVless: true                      # 是否启用 VLESS 协议
@@ -35,7 +35,7 @@ Nodes:
 
     ControllerConfig:
       ListenIP: 0.0.0.0                     # 监听 IP，仅监听本机以配合 Nginx 反代
-      ListenPort: 5443                      # 本地监听端口（供 Nginx 反代转发）
+      ListenPort: 8055                      # 本地监听端口（供 Nginx 反代转发）
       SendIP: 0.0.0.0                        # 出站使用的 IP
       UpdatePeriodic: 60                     # 向面板汇报周期（秒）
       DeviceOnlineMinTraffic: 100            # 设备在线流量最小值（KB）
@@ -96,67 +96,12 @@ Nodes:
         Email: ""
         DNSEnv: {}
 
-  # =================== Shadowsocks 节点配置 ===================
-  - PanelType: V2board            # 面板类型
-    ApiConfig:
-      ApiHost: "https://now.just-do-it.top"
-      ApiKey: "zcw0101.20250627"             # 节点通讯密钥（与上面相同）
-      NodeID: 5                           # Shadowsocks 节点 ID（不同于VLESS）
-      NodeType: Shadowsocks               # 节点类型：Shadowsocks
-      Timeout: 30                         # 请求超时（秒）
-      EnableVless: false                  # 不启用 VLESS
-      SpeedLimit: 0                       # 限速（Mbps），0 表示不限速
-      DeviceLimit: 0                      # 限制同时在线设备数
-      RuleListPath:                       # 自定义规则列表路径
-      DisableCustomConfig: false          # 禁用面板自定义配置
-
-    ControllerConfig:
-      ListenIP: 0.0.0.0                 # 监听 IP
-      ListenPort: 3443                    # Shadowsocks 监听端口（不同于VLESS）
-      SendIP: 0.0.0.0                    # 出站使用的 IP
-      UpdatePeriodic: 60                  # 向面板汇报周期（秒）
-      DeviceOnlineMinTraffic: 100         # 设备在线流量最小值（KB）
-      EnableDNS: false                    # 是否启用自定义 DNS
-      DNSType: AsIs                       # DNS 策略
-      EnableProxyProtocol: false          # 是否开启 PROXY 协议
-
-      # ================= Shadowsocks 特有配置 =================
-      CypherMethod: aes-256-gcm           # 加密方式
-      
-      # ================= 自动限速相关 =================
-      AutoSpeedLimitConfig:
-        Limit: 0
-        WarnTimes: 0
-        LimitSpeed: 0
-        LimitDuration: 0
-
-      # ================= 全局设备限制 =================
-      GlobalDeviceLimitConfig:
-        Enable: false                     # 不启用全局设备限制
-        RedisNetwork: tcp
-        RedisAddr: 127.0.0.1:6379
-        RedisUsername:
-        RedisPassword:
-        RedisDB: 0
-        Timeout: 5
-        Expiry: 60
-
-      # ================= TLS 配置（SS不需要） =================
-      CertConfig:
-        CertMode: none                    # SS 不需要 TLS
-        CertDomain: ""
-        CertFile: ""
-        KeyFile: ""
-        Provider: ""
-        Email: ""
-        DNSEnv: {}
-
   # =================== REALITY 节点配置 ===================
   - PanelType: V2board
     ApiConfig:
       ApiHost: "https://now.just-do-it.top"
-      ApiKey: "zcw0101.20250627"
-      NodeID: 22
+      ApiKey: "zc0101my_v2_board"
+      NodeID: 8
       NodeType: Vless
       Timeout: 30
       EnableVless: true
@@ -166,7 +111,7 @@ Nodes:
 
     ControllerConfig:
       ListenIP: 0.0.0.0
-      ListenPort: 8443
+      ListenPort: 7055
       SendIP: 0.0.0.0
       UpdatePeriodic: 60
       DeviceOnlineMinTraffic: 100
@@ -206,15 +151,70 @@ Nodes:
         ProxyProtocolVer: 0
         ServerNames:
           - www.bing.com
-        PrivateKey: "V_rnoe1YZm4BloMq5vFE--8TBaIAQzmCJj5ONyszrH8"
+        PrivateKey: "s3LVc6nszLhz-S_Nh6zS05f6KdOVUBbVPAVDY5bECoY"
         MinClientVer:
         MaxClientVer:
         MaxTimeDiff: 0
         ShortIds:
-          - "8e24b560"
+          - "54bd8c05"
 
       CertConfig:
         CertMode: none
+        CertDomain: ""
+        CertFile: ""
+        KeyFile: ""
+        Provider: ""
+        Email: ""
+        DNSEnv: {}
+  
+  # =================== Shadowsocks 节点配置 ===================
+  - PanelType: V2board            # 面板类型
+    ApiConfig:
+      ApiHost: "https://now.just-do-it.top"
+      ApiKey: "zc0101my_v2_board"         # 节点通讯密钥（与上面相同）
+      NodeID: 3                           # Shadowsocks 节点 ID（不同于VLESS）
+      NodeType: Shadowsocks               # 节点类型：Shadowsocks
+      Timeout: 30                         # 请求超时（秒）
+      EnableVless: false                  # 不启用 VLESS
+      SpeedLimit: 0                       # 限速（Mbps），0 表示不限速
+      DeviceLimit: 0                      # 限制同时在线设备数
+      RuleListPath:                       # 自定义规则列表路径
+      DisableCustomConfig: false          # 禁用面板自定义配置
+
+    ControllerConfig:
+      ListenIP: 0.0.0.0                 # 监听 IP
+      ListenPort: 2055                    # Shadowsocks 监听端口（不同于VLESS）
+      SendIP: 0.0.0.0                    # 出站使用的 IP
+      UpdatePeriodic: 60                  # 向面板汇报周期（秒）
+      DeviceOnlineMinTraffic: 100         # 设备在线流量最小值（KB）
+      EnableDNS: false                    # 是否启用自定义 DNS
+      DNSType: AsIs                       # DNS 策略
+      EnableProxyProtocol: false          # 是否开启 PROXY 协议
+
+      # ================= Shadowsocks 特有配置 =================
+      CypherMethod: aes-256-gcm           # 加密方式
+      
+      # ================= 自动限速相关 =================
+      AutoSpeedLimitConfig:
+        Limit: 0
+        WarnTimes: 0
+        LimitSpeed: 0
+        LimitDuration: 0
+
+      # ================= 全局设备限制 =================
+      GlobalDeviceLimitConfig:
+        Enable: false                     # 不启用全局设备限制
+        RedisNetwork: tcp
+        RedisAddr: 127.0.0.1:6379
+        RedisUsername:
+        RedisPassword:
+        RedisDB: 0
+        Timeout: 5
+        Expiry: 60
+
+      # ================= TLS 配置（SS不需要） =================
+      CertConfig:
+        CertMode: none                    # SS 不需要 TLS
         CertDomain: ""
         CertFile: ""
         KeyFile: ""
@@ -226,8 +226,8 @@ Nodes:
   - PanelType: V2board            # 面板类型
     ApiConfig:
       ApiHost: "https://now.just-do-it.top"
-      ApiKey: "zcw0101.20250627"              # 节点通讯密钥（与上面相同）
-      NodeID: 2                           # VMess 节点 ID（不同于其他节点）
+      ApiKey: "zc0101my_v2_board"              # 节点通讯密钥（与上面相同）
+      NodeID: 3                           # VMess 节点 ID（不同于其他节点）
       NodeType: V2ray                     # 节点类型：V2ray（VMess使用V2ray类型）
       Timeout: 30                         # 请求超时（秒）
       EnableVless: false                  # 不启用 VLESS（使用VMess）
@@ -238,7 +238,7 @@ Nodes:
 
     ControllerConfig:
       ListenIP: 0.0.0.0                 # 监听 IP
-      ListenPort: 6443                    # VMess 监听端口（不同于其他协议）
+      ListenPort: 3055                    # VMess 监听端口（不同于其他协议）
       SendIP: 0.0.0.0                    # 出站使用的 IP
       UpdatePeriodic: 60                  # 向面板汇报周期（秒）
       DeviceOnlineMinTraffic: 100         # 设备在线流量最小值（KB）
@@ -283,6 +283,150 @@ Nodes:
         Email: ""
         DNSEnv: {}
 
+  # # =================== Trojan 节点配置 ===================
+  # - PanelType: V2board            # 面板类型
+  #   ApiConfig:
+  #     ApiHost: "https://now.just-do-it.top"
+  #     ApiKey: "zcw0101.20250627"              # 节点通讯密钥（与上面相同）
+  #     NodeID: 2                           # Trojan 节点 ID（不同于其他节点）
+  #     NodeType: Trojan                    # 节点类型：Trojan
+  #     Timeout: 30                         # 请求超时（秒）
+  #     EnableVless: false                  # 不启用 VLESS
+  #     SpeedLimit: 0                       # 限速（Mbps），0 表示不限速
+  #     DeviceLimit: 0                      # 限制同时在线设备数
+  #     RuleListPath:                       # 自定义规则列表路径
+  #     DisableCustomConfig: false          # 禁用面板自定义配置
+
+  #   ControllerConfig:
+  #     ListenIP: 0.0.0.0                 # 监听 IP
+  #     ListenPort: 7443                    # Trojan 监听端口（不同于其他协议）
+  #     SendIP: 0.0.0.0                    # 出站使用的 IP
+  #     UpdatePeriodic: 60                  # 向面板汇报周期（秒）
+  #     DeviceOnlineMinTraffic: 100         # 设备在线流量最小值（KB）
+  #     EnableDNS: false                    # 是否启用自定义 DNS
+  #     DNSType: AsIs                       # DNS 策略
+  #     EnableProxyProtocol: false          # 是否开启 PROXY 协议
+
+  #     # ================= 自动限速相关 =================
+  #     AutoSpeedLimitConfig:
+  #       Limit: 0
+  #       WarnTimes: 0
+  #       LimitSpeed: 0
+  #       LimitDuration: 0
+
+  #     # ================= 全局设备限制 =================
+  #     GlobalDeviceLimitConfig:
+  #       Enable: false                     # 不启用全局设备限制
+  #       RedisNetwork: tcp
+  #       RedisAddr: 127.0.0.1:6379
+  #       RedisUsername:
+  #       RedisPassword:
+  #       RedisDB: 0
+  #       Timeout: 5
+  #       Expiry: 60
+
+  #     # ================= 回落配置 =================
+  #     EnableFallback: false
+  #     FallBackConfigs:
+  #       - SNI:
+  #         Alpn:
+  #         Path:
+  #         Dest: 80
+  #         ProxyProtocolVer: 0
+
+  #     # ================= TLS 配置 =================
+  #     EnableTLS: false
+  #     CertConfig:
+  #       CertMode: none                    # 必须为 none，表示不处理 TLS
+  #       CertDomain: ""
+  #       CertFile: ""
+  #       KeyFile: ""
+  #       Provider: ""
+  #       Email: ""
+  #       DNSEnv: {}
+
+#       # ================= TLS 配置 =================
+#       EnableTLS: true
+#       TLSConfig:
+#         ServerName: "sg.just-do-it.top"
+#         MinVersion: "1.2"
+#         MaxVersion: "1.3"
+#         CipherSuites: []
+# #        # XTLS专用配置
+# #        TLSMode: TLS                    #  关键：启用XTLS模式
+# #        Flow: "xtls-rprx-vision"         #  关键：启用流控
+
+#       # 证书配置（必须是真实有效的证书）
+#       CertConfig:
+#         CertMode: file
+#         CertDomain: "sg.just-do-it.top"
+#         CertFile: "/etc/XrayR/cert/fullchain.pem"
+#         KeyFile: "/etc/XrayR/cert/privkey.pem"
+
+  # # =================== vless-XTLS 节点配置 ===================
+  # - PanelType: V2board
+  #   ApiConfig:
+  #     ApiHost: "https://now.just-do-it.top"
+  #     ApiKey: "zcw0101.20250627"
+  #     NodeID: 11
+  #     NodeType: Vless
+  #     Timeout: 30
+  #     EnableVless: true
+  #     SpeedLimit: 0
+  #     DeviceLimit: 0
+  #     RuleListPath: ~
+  #     DisableCustomConfig: false
+
+  #   ControllerConfig:
+  #     ListenIP: 0.0.0.0
+  #     ListenPort: 8443
+  #     SendIP: 0.0.0.0
+  #     UpdatePeriodic: 60
+  #     DeviceOnlineMinTraffic: 100
+  #     EnableDNS: false
+  #     DNSType: AsIs
+  #     EnableProxyProtocol: false
+
+  #     AutoSpeedLimitConfig:
+  #       Limit: 0
+  #       WarnTimes: 0
+  #       LimitSpeed: 0
+  #       LimitDuration: 0
+
+  #     GlobalDeviceLimitConfig:
+  #       Enable: false
+  #       RedisNetwork: tcp
+  #       RedisAddr: 127.0.0.1:6379
+  #       RedisUsername: ""
+  #       RedisPassword: ""
+  #       RedisDB: 0
+  #       Timeout: 5
+  #       Expiry: 60
+
+  #     EnableFallback: false
+  #     FallBackConfigs: []
+
+  #     # ===== XTLS配置 - 关键部分 =====
+  #     EnableTLS: true
+  #     TLSConfig:
+  #       ServerName: "sg.just-do-it.top"
+  #       MinVersion: "1.2"
+  #       MaxVersion: "1.3"
+  #       CipherSuites: []
+  #       # XTLS专用配置
+  #       TLSMode: TLS                    #  关键：启用XTLS模式
+  #       Flow: "xtls-rprx-vision"         #  关键：启用流控
+
+  #     # 证书配置（必须是真实有效的证书）
+  #     CertConfig:
+  #       CertMode: file
+  #       CertDomain: "sg.just-do-it.top"
+  #       CertFile: "/etc/XrayR/cert/fullchain.pem"
+  #       KeyFile: "/etc/XrayR/cert/privkey.pem"
+
+  #     # ===== 确保REALITY完全禁用 =====
+  #     EnableReality: false
+  #     REALITYConfigs: {}
 
   # # =================== Trojan 节点配置 ===================
   # - PanelType: V2board            # 面板类型
