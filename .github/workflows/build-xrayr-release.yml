@@ -1,0 +1,78 @@
+name: Build and upload XrayR release assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing XrayR-release tag that receives the ZIP assets
+        required: true
+        default: v0.9.5
+      source_repository:
+        description: Repository containing the XrayR Go source code
+        required: true
+        default: zcw666806/XrayR
+      source_ref:
+        description: Branch, tag, or commit to build from the source repository
+        required: true
+        default: master
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-upload:
+    name: Build linux/${{ matrix.goarch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goarch: amd64
+            asset_suffix: "64"
+          - goarch: arm64
+            asset_suffix: arm64-v8a
+          - goarch: s390x
+            asset_suffix: s390x
+
+    steps:
+      - name: Check out release repository
+        uses: actions/checkout@v4
+
+      - name: Check out XrayR source repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.source_repository }}
+          ref: ${{ inputs.source_ref }}
+          path: source
+          token: ${{ secrets.XRAYR_SOURCE_TOKEN || github.token }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+          cache-dependency-path: source/go.sum
+
+      - name: Build ZIP asset
+        env:
+          TARGETS: ${{ matrix.goarch }}:${{ matrix.asset_suffix }}
+        run: scripts/build-release-assets.sh source dist
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: XrayR-linux-${{ matrix.asset_suffix }}
+          path: |
+            dist/XrayR-linux-${{ matrix.asset_suffix }}.zip
+            dist/XrayR-linux-${{ matrix.asset_suffix }}.zip.sha256
+
+      - name: Upload files to existing GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          ASSET_SUFFIX: ${{ matrix.asset_suffix }}
+        run: |
+          gh release view "${RELEASE_TAG}"
+          gh release upload "${RELEASE_TAG}" \
+            "dist/XrayR-linux-${ASSET_SUFFIX}.zip" \
+            "dist/XrayR-linux-${ASSET_SUFFIX}.zip.sha256" \
+            --clobber
