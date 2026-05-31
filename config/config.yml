@@ -22,8 +22,8 @@ ConnectionConfig:
 Nodes:
   - PanelType: V2board           # 面板类型，SSpanel, V2board, NewV2board, PMpanel, Proxypanel, V2RaySocks, GoV2Panel
     ApiConfig:
-      ApiHost: "https://now.just-do-it.top"  # 你的 v2board 面板地址（带 https）
-      ApiKey: "zc0101my_v2_board"            # 节点通讯密钥（后台设置）
+      ApiHost: "https://panel.example.com"  # 你的 v2board 面板地址（带 https）
+      ApiKey: "REPLACE_WITH_YOUR_API_KEY"            # 节点通讯密钥（后台设置）
       NodeID: 7                              # 节点 ID（后台创建节点后可见）
       NodeType: V2ray                        # 节点类型，可选 V2ray, Vmess, Vless, Shadowsocks, Trojan, Shadowsocks-Plugin
       Timeout: 30                            # 请求超时（秒）
@@ -99,8 +99,8 @@ Nodes:
   # =================== REALITY 节点配置 ===================
   - PanelType: V2board
     ApiConfig:
-      ApiHost: "https://now.just-do-it.top"
-      ApiKey: "zc0101my_v2_board"
+      ApiHost: "https://panel.example.com"
+      ApiKey: "REPLACE_WITH_YOUR_API_KEY"
       NodeID: 8
       NodeType: Vless
       Timeout: 30
@@ -170,8 +170,8 @@ Nodes:
   # =================== Shadowsocks 节点配置 ===================
   - PanelType: V2board            # 面板类型
     ApiConfig:
-      ApiHost: "https://now.just-do-it.top"
-      ApiKey: "zc0101my_v2_board"         # 节点通讯密钥（与上面相同）
+      ApiHost: "https://panel.example.com"
+      ApiKey: "REPLACE_WITH_YOUR_API_KEY"         # 节点通讯密钥（与上面相同）
       NodeID: 3                           # Shadowsocks 节点 ID（不同于VLESS）
       NodeType: Shadowsocks               # 节点类型：Shadowsocks
       Timeout: 30                         # 请求超时（秒）
@@ -225,8 +225,8 @@ Nodes:
   # =================== VMess 节点配置 ===================
   - PanelType: V2board            # 面板类型
     ApiConfig:
-      ApiHost: "https://now.just-do-it.top"
-      ApiKey: "zc0101my_v2_board"              # 节点通讯密钥（与上面相同）
+      ApiHost: "https://panel.example.com"
+      ApiKey: "REPLACE_WITH_YOUR_API_KEY"              # 节点通讯密钥（与上面相同）
       NodeID: 3                           # VMess 节点 ID（不同于其他节点）
       NodeType: V2ray                     # 节点类型：V2ray（VMess使用V2ray类型）
       Timeout: 30                         # 请求超时（秒）
@@ -286,8 +286,8 @@ Nodes:
   # # =================== Trojan 节点配置 ===================
   # - PanelType: V2board            # 面板类型
   #   ApiConfig:
-  #     ApiHost: "https://now.just-do-it.top"
-  #     ApiKey: "zcw0101.20250627"              # 节点通讯密钥（与上面相同）
+  #     ApiHost: "https://panel.example.com"
+  #     ApiKey: "REPLACE_WITH_YOUR_API_KEY"              # 节点通讯密钥（与上面相同）
   #     NodeID: 2                           # Trojan 节点 ID（不同于其他节点）
   #     NodeType: Trojan                    # 节点类型：Trojan
   #     Timeout: 30                         # 请求超时（秒）
@@ -366,8 +366,8 @@ Nodes:
   # # =================== vless-XTLS 节点配置 ===================
   # - PanelType: V2board
   #   ApiConfig:
-  #     ApiHost: "https://now.just-do-it.top"
-  #     ApiKey: "zcw0101.20250627"
+  #     ApiHost: "https://panel.example.com"
+  #     ApiKey: "REPLACE_WITH_YOUR_API_KEY"
   #     NodeID: 11
   #     NodeType: Vless
   #     Timeout: 30
@@ -431,8 +431,8 @@ Nodes:
   # # =================== Trojan 节点配置 ===================
   # - PanelType: V2board            # 面板类型
   #   ApiConfig:
-  #     ApiHost: "https://now.just-do-it.top"
-  #     ApiKey: "zcw0101.20250627"              # 节点通讯密钥（与上面相同）
+  #     ApiHost: "https://panel.example.com"
+  #     ApiKey: "REPLACE_WITH_YOUR_API_KEY"              # 节点通讯密钥（与上面相同）
   #     NodeID: 2                           # Trojan 节点 ID（不同于其他节点）
   #     NodeType: Trojan                    # 节点类型：Trojan
   #     Timeout: 30                         # 请求超时（秒）

@@ -5,7 +5,23 @@ green='\033[0;32m'
 yellow='\033[0;33m'
 plain='\033[0m'
 
+SCRIPT_OWNER="zcw666806"
+SCRIPT_REPO="XrayR-release"
+SCRIPT_BRANCH="master"
+SCRIPT_RAW_BASE="https://raw.githubusercontent.com/${SCRIPT_OWNER}/${SCRIPT_REPO}/${SCRIPT_BRANCH}"
+RELEASE_API="https://api.github.com/repos/${SCRIPT_OWNER}/${SCRIPT_REPO}/releases/latest"
+RELEASE_BASE="https://github.com/${SCRIPT_OWNER}/${SCRIPT_REPO}/releases/download"
+CONFIG_FILES=(config.yml dns.json route.json custom_outbound.json custom_inbound.json rulelist geoip.dat geosite.dat)
+
 cur_dir=$(pwd)
+temp_dir=""
+
+cleanup() {
+    if [[ -n "${temp_dir}" && -d "${temp_dir}" ]]; then
+        rm -rf "${temp_dir}"
+    fi
+}
+trap cleanup EXIT
 
 # check root
 [[ $EUID -ne 0 ]] && echo -e "${red}错误：${plain} 必须使用root用户运行此脚本！\n" && exit 1
@@ -13,17 +29,17 @@ cur_dir=$(pwd)
 # check os
 if [[ -f /etc/redhat-release ]]; then
     release="centos"
-elif cat /etc/issue | grep -Eqi "debian"; then
+elif grep -Eqi "debian" /etc/issue; then
     release="debian"
-elif cat /etc/issue | grep -Eqi "ubuntu"; then
+elif grep -Eqi "ubuntu" /etc/issue; then
     release="ubuntu"
-elif cat /etc/issue | grep -Eqi "centos|red hat|redhat"; then
+elif grep -Eqi "centos|red hat|redhat" /etc/issue; then
     release="centos"
-elif cat /proc/version | grep -Eqi "debian"; then
+elif grep -Eqi "debian" /proc/version; then
     release="debian"
-elif cat /proc/version | grep -Eqi "ubuntu"; then
+elif grep -Eqi "ubuntu" /proc/version; then
     release="ubuntu"
-elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
+elif grep -Eqi "centos|red hat|redhat" /proc/version; then
     release="centos"
 else
     echo -e "${red}未检测到系统版本，请联系脚本作者！${plain}\n" && exit 1
@@ -39,12 +55,12 @@ elif [[ $arch == "s390x" ]]; then
     arch="s390x"
 else
     arch="64"
-    echo -e "${red}检测架构失败，使用默认架构: ${arch}${plain}"
+    echo -e "${yellow}检测架构失败，使用默认架构: ${arch}${plain}"
 fi
 
 echo "架构: ${arch}"
 
-if [ "$(getconf WORD_BIT)" != '32' ] && [ "$(getconf LONG_BIT)" != '64' ] ; then
+if [ "$(getconf WORD_BIT)" != '32' ] && [ "$(getconf LONG_BIT)" != '64' ]; then
     echo "本软件不支持 32 位系统(x86)，请使用 64 位系统(x86_64)，如果检测有误，请联系作者"
     exit 2
 fi
@@ -96,64 +112,101 @@ check_status() {
     fi
 }
 
-install_acme() {
-    curl https://get.acme.sh | sh
+download_file() {
+    local url=$1
+    local output=$2
+    local description=$3
+
+    if ! wget -q --no-check-certificate -O "${output}" "${url}"; then
+        echo -e "${red}下载${description}失败：${url}${plain}"
+        exit 1
+    fi
+}
+
+download_config_templates() {
+    local config_file
+
+    mkdir -p "${temp_dir}/config"
+    for config_file in "${CONFIG_FILES[@]}"; do
+        download_file "${SCRIPT_RAW_BASE}/config/${config_file}" "${temp_dir}/config/${config_file}" "配置文件 ${config_file}"
+    done
+}
+
+install_config_templates() {
+    local config_file
+
+    mkdir -p /etc/XrayR
+
+    # 数据库文件随仓库版本更新；可编辑配置只在不存在时安装，避免更新时覆盖本机配置。
+    cp -f "${temp_dir}/config/geoip.dat" /etc/XrayR/geoip.dat
+    cp -f "${temp_dir}/config/geosite.dat" /etc/XrayR/geosite.dat
+
+    for config_file in config.yml dns.json route.json custom_outbound.json custom_inbound.json rulelist; do
+        if [[ ! -f "/etc/XrayR/${config_file}" ]]; then
+            cp "${temp_dir}/config/${config_file}" "/etc/XrayR/${config_file}"
+        fi
+    done
 }
 
 install_XrayR() {
-    if [[ -e /usr/local/XrayR/ ]]; then
-        rm /usr/local/XrayR/ -rf
-    fi
+    local last_version
+    local url
+    local had_config=0
 
-    mkdir /usr/local/XrayR/ -p
-	cd /usr/local/XrayR/
+    temp_dir=$(mktemp -d)
 
-    if  [ $# == 0 ] ;then
-        last_version=$(curl -Ls "https://api.github.com/repos/XrayR-project/XrayR/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-        if [[ ! -n "$last_version" ]]; then
-            echo -e "${red}检测 XrayR 版本失败，可能是超出 Github API 限制，请稍后再试，或手动指定 XrayR 版本安装${plain}"
+    if [[ $# == 0 || -z "$1" ]]; then
+        last_version=$(curl -fLs "${RELEASE_API}" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | head -n 1)
+        if [[ -z "${last_version}" ]]; then
+            echo -e "${red}检测 XrayR 版本失败。请确认仓库 ${SCRIPT_OWNER}/${SCRIPT_REPO} 已发布 GitHub Release，或手动指定版本安装。${plain}"
             exit 1
         fi
         echo -e "检测到 XrayR 最新版本：${last_version}，开始安装"
-        wget -q -N --no-check-certificate -O /usr/local/XrayR/XrayR-linux.zip https://github.com/XrayR-project/XrayR/releases/download/${last_version}/XrayR-linux-${arch}.zip
-        if [[ $? -ne 0 ]]; then
-            echo -e "${red}下载 XrayR 失败，请确保你的服务器能够下载 Github 的文件${plain}"
-            exit 1
-        fi
     else
         if [[ $1 == v* ]]; then
             last_version=$1
-	else
-	    last_version="v"$1
-	fi
-        url="https://github.com/XrayR-project/XrayR/releases/download/${last_version}/XrayR-linux-${arch}.zip"
-        echo -e "开始安装 XrayR ${last_version}"
-        wget -q -N --no-check-certificate -O /usr/local/XrayR/XrayR-linux.zip ${url}
-        if [[ $? -ne 0 ]]; then
-            echo -e "${red}下载 XrayR ${last_version} 失败，请确保此版本存在${plain}"
-            exit 1
+        else
+            last_version="v$1"
         fi
+        echo -e "开始安装 XrayR ${last_version}"
     fi
 
-    unzip XrayR-linux.zip
-    rm XrayR-linux.zip -f
-    chmod +x XrayR
-    mkdir /etc/XrayR/ -p
-    rm /etc/systemd/system/XrayR.service -f
-    file="https://github.com/XrayR-project/XrayR-release/raw/master/XrayR.service"
-    wget -q -N --no-check-certificate -O /etc/systemd/system/XrayR.service ${file}
-    #cp -f XrayR.service /etc/systemd/system/
+    url="${RELEASE_BASE}/${last_version}/XrayR-linux-${arch}.zip"
+    download_file "${url}" "${temp_dir}/XrayR-linux.zip" " XrayR ${last_version}"
+    if ! unzip -q "${temp_dir}/XrayR-linux.zip" -d "${temp_dir}/XrayR"; then
+        echo -e "${red}解压 XrayR ${last_version} 失败，请检查 Release ZIP 文件是否完整。${plain}"
+        exit 1
+    fi
+    if [[ ! -f "${temp_dir}/XrayR/XrayR" ]]; then
+        echo -e "${red}Release ZIP 根目录中缺少 XrayR 可执行文件。${plain}"
+        exit 1
+    fi
+
+    download_file "${SCRIPT_RAW_BASE}/XrayR.service" "${temp_dir}/XrayR.service" " XrayR.service"
+    download_file "${SCRIPT_RAW_BASE}/XrayR.sh" "${temp_dir}/XrayR.sh" " XrayR 管理脚本"
+    download_config_templates
+
+    if [[ -f /etc/XrayR/config.yml ]]; then
+        had_config=1
+    fi
+
+    systemctl stop XrayR 2>/dev/null || true
+    rm -rf /usr/local/XrayR
+    mv "${temp_dir}/XrayR" /usr/local/XrayR
+    chmod +x /usr/local/XrayR/XrayR
+
+    install_config_templates
+    install -m 644 "${temp_dir}/XrayR.service" /etc/systemd/system/XrayR.service
+    install -m 755 "${temp_dir}/XrayR.sh" /usr/bin/XrayR
+    ln -sf /usr/bin/XrayR /usr/bin/xrayr
+
     systemctl daemon-reload
-    systemctl stop XrayR
     systemctl enable XrayR
     echo -e "${green}XrayR ${last_version}${plain} 安装完成，已设置开机自启"
-    cp geoip.dat /etc/XrayR/
-    cp geosite.dat /etc/XrayR/ 
 
-    if [[ ! -f /etc/XrayR/config.yml ]]; then
-        cp config.yml /etc/XrayR/
+    if [[ ${had_config} == 0 ]]; then
         echo -e ""
-        echo -e "全新安装，请先参看教程：https://github.com/XrayR-project/XrayR，配置必要的内容"
+        echo -e "全新安装：已从 ${SCRIPT_RAW_BASE}/config/ 安装配置模板。请先修改 /etc/XrayR/config.yml 等配置文件，再执行 XrayR start。"
     else
         systemctl start XrayR
         sleep 2
@@ -162,31 +215,11 @@ install_XrayR() {
         if [[ $? == 0 ]]; then
             echo -e "${green}XrayR 重启成功${plain}"
         else
-            echo -e "${red}XrayR 可能启动失败，请稍后使用 XrayR log 查看日志信息，若无法启动，则可能更改了配置格式，请前往 wiki 查看：https://github.com/XrayR-project/XrayR/wiki${plain}"
+            echo -e "${red}XrayR 可能启动失败，请稍后使用 XrayR log 查看日志信息，并检查 /etc/XrayR/ 下的配置文件。${plain}"
         fi
     fi
 
-    if [[ ! -f /etc/XrayR/dns.json ]]; then
-        cp dns.json /etc/XrayR/
-    fi
-    if [[ ! -f /etc/XrayR/route.json ]]; then
-        cp route.json /etc/XrayR/
-    fi
-    if [[ ! -f /etc/XrayR/custom_outbound.json ]]; then
-        cp custom_outbound.json /etc/XrayR/
-    fi
-    if [[ ! -f /etc/XrayR/custom_inbound.json ]]; then
-        cp custom_inbound.json /etc/XrayR/
-    fi
-    if [[ ! -f /etc/XrayR/rulelist ]]; then
-        cp rulelist /etc/XrayR/
-    fi
-    curl -o /usr/bin/XrayR -Ls https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/XrayR.sh
-    chmod +x /usr/bin/XrayR
-    ln -s /usr/bin/XrayR /usr/bin/xrayr # 小写兼容
-    chmod +x /usr/bin/xrayr
-    cd $cur_dir
-    rm -f install.sh
+    cd "${cur_dir}"
     echo -e ""
     echo "XrayR 管理脚本使用方法 (兼容使用xrayr执行，大小写不敏感): "
     echo "------------------------------------------"
@@ -209,5 +242,4 @@ install_XrayR() {
 
 echo -e "${green}开始安装${plain}"
 install_base
-# install_acme
-install_XrayR $1
+install_XrayR "$1"
