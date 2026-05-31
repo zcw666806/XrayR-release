@@ -5,6 +5,8 @@ green='\033[0;32m'
 yellow='\033[0;33m'
 plain='\033[0m'
 
+SCRIPT_RAW_BASE="https://raw.githubusercontent.com/zcw666806/XrayR-release/master"
+
 version="v1.0.0"
 
 # check root
@@ -83,8 +85,24 @@ before_show_menu() {
     show_menu
 }
 
+run_install_script() {
+    local install_script
+    install_script=$(mktemp)
+
+    if ! curl -fLs "${SCRIPT_RAW_BASE}/install.sh" -o "${install_script}"; then
+        rm -f "${install_script}"
+        echo -e "${red}下载安装脚本失败，请检查本机能否连接 Github${plain}"
+        return 1
+    fi
+
+    bash "${install_script}" "$@"
+    local result=$?
+    rm -f "${install_script}"
+    return ${result}
+}
+
 install() {
-    bash <(curl -Ls https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/install.sh)
+    run_install_script
     if [[ $? == 0 ]]; then
         if [[ $# == 0 ]]; then
             start
@@ -108,7 +126,7 @@ update() {
 #        fi
 #        return 0
 #    fi
-    bash <(curl -Ls https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/install.sh) $version
+    run_install_script "$version"
     if [[ $? == 0 ]]; then
         echo -e "${green}更新完成，已自动重启 XrayR，请使用 XrayR log 查看运行日志${plain}"
         exit
@@ -270,13 +288,17 @@ install_bbr() {
 }
 
 update_shell() {
-    wget -O /usr/bin/XrayR -N --no-check-certificate https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/XrayR.sh
-    if [[ $? != 0 ]]; then
+    local shell_script
+    shell_script=$(mktemp)
+
+    if ! wget -q --no-check-certificate -O "${shell_script}" "${SCRIPT_RAW_BASE}/XrayR.sh"; then
+        rm -f "${shell_script}"
         echo ""
         echo -e "${red}下载脚本失败，请检查本机能否连接 Github${plain}"
         before_show_menu
     else
-        chmod +x /usr/bin/XrayR
+        install -m 755 "${shell_script}" /usr/bin/XrayR
+        rm -f "${shell_script}"
         echo -e "${green}升级脚本成功，请重新运行脚本${plain}" && exit 0
     fi
 }
@@ -387,7 +409,7 @@ show_usage() {
 show_menu() {
     echo -e "
   ${green}XrayR 后端管理脚本，${plain}${red}不适用于docker${plain}
---- https://github.com/XrayR-project/XrayR ---
+--- https://github.com/zcw666806/XrayR-release ---
   ${green}0.${plain} 修改配置
 ————————————————
   ${green}1.${plain} 安装 XrayR
