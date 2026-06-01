@@ -29,7 +29,7 @@
       "domain": [
         "geosite:cn"
       ],
-      "outboundTag": "direct"
+      "outboundTag": "warp"
     },
     {
       "ip": [
