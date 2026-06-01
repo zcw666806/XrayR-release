@@ -8,7 +8,7 @@ Log:
 DnsConfigPath: ~                   # DNS 配置路径，如不启用请填 ~
 RouteConfigPath: /etc/XrayR/route.json  # 路由规则配置路径，如不启用也可填 ~
 InboundConfigPath: ~              # 自定义入站配置（如需完整控制端口协议等）
-OutboundConfigPath: ~             # 自定义出站配置
+OutboundConfigPath: /etc/XrayR/custom_outbound.json            # 自定义出站配置
 
 # ======================= 连接参数设置 =======================
 ConnectionConfig:
