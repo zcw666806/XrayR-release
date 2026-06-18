@@ -74,39 +74,6 @@ config/geosite.dat
    XrayR log
    ```
 
-## 使用 GitHub Actions 自动生成并上传 Release 资产
-
-仓库已包含工作流 `.github/workflows/build-xrayr-release.yml`。它会从 `zcw666806/XrayR` 读取 Go 源码，交叉编译 Linux `amd64`、`arm64` 和 `s390x` 三种架构，生成安装器需要的 ZIP 文件，并上传到已经存在的 Release。
-
-如果 `zcw666806/XrayR` 是公开仓库，无需额外 Token。如果它是私有仓库，请先在 `zcw666806/XrayR-release` 的 **Settings → Secrets and variables → Actions** 中添加名为 `XRAYR_SOURCE_TOKEN` 的 fine-grained personal access token，并至少授予读取 `zcw666806/XrayR` 内容的权限。默认 `GITHUB_TOKEN` 通常不能读取另一个私有仓库。
-
-您已经建立 `0.9.5` Release 后，可以在 `zcw666806/XrayR-release` 的 **Actions → Build and upload XrayR release assets → Run workflow** 中填写：
-
-```text
-release_tag:       0.9.5
-source_repository: zcw666806/XrayR
-source_ref:        master
-```
-
-工作流成功后，`0.9.5` Release 应包含：
-
-```text
-XrayR-linux-64.zip
-XrayR-linux-64.zip.sha256
-XrayR-linux-arm64-v8a.zip
-XrayR-linux-arm64-v8a.zip.sha256
-XrayR-linux-s390x.zip
-XrayR-linux-s390x.zip.sha256
-```
-
-如果您希望在自己的 Linux 电脑上手动生成这些文件，也可以将源码仓库与本仓库放在相邻目录，然后执行：
-
-```bash
-./scripts/build-release-assets.sh ../XrayR ./dist
-```
-
-脚本只会将编译得到的 `XrayR` 可执行文件放入 ZIP。配置模板仍由安装器从本仓库 `config/` 目录下载。
-
 ## 配置更新策略
 
 - `config.yml`、`dns.json`、`route.json`、`custom_outbound.json`、`custom_inbound.json` 和 `rulelist` 只会在服务器上不存在时安装，避免 `XrayR update` 覆盖线上配置。
