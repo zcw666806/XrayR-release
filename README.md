@@ -1,6 +1,6 @@
 # XRayR 自托管发布仓库
 
-本仓库用于在原上游发布地址不可用时，自行托管 XrayR 安装脚本、管理脚本、systemd 服务、配置模板和 XrayR 二进制 Release。
+自行托管 XrayR 安装脚本、管理脚本、systemd 服务、配置模板和 XrayR 二进制 Release，仅供学习交流使用，请勿用于任何非法用途。
 
 ## 一键安装
 
